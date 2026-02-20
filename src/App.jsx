@@ -103,7 +103,6 @@ function App() {
       )}
       {currentScreen === 'breathing' && (
         <GuidedBreathing
-          suggestedActivity={suggestedActivity} // Passing this down just in case, though the breathing component handles its own text right now
           onComplete={handleBreathingComplete}
         />
       )}

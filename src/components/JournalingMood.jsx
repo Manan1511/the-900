@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 function JournalingMood({ onContinue, journalEntry, setJournalEntry, stressLevel, setStressLevel, energyLevel, setEnergyLevel }) {
-    const [wordCount, setWordCount] = useState(0);
-    const [isBold, setIsBold] = useState(false);
-    const [isItalic, setIsItalic] = useState(false);
     const editorRef = React.useRef(null);
 
-    useEffect(() => {
-        // Calculate word count
-        const words = journalEntry.trim().split(/\s+/);
-        setWordCount(journalEntry.trim() === '' ? 0 : words.length);
-    }, [journalEntry]);
+    const [isBold, setIsBold] = useState(false);
+    const [isItalic, setIsItalic] = useState(false);
+
+    // Calculate word count
+    const words = journalEntry.trim().split(/\s+/);
+    const wordCount = journalEntry.trim() === '' ? 0 : words.length;
 
     const handleFormat = (command) => {
         document.execCommand(command, false, null);
