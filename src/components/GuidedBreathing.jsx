@@ -193,7 +193,7 @@ function GuidedBreathing({ onComplete }) {
                                 {isPaused ? 'Paused' : displayState.breathState}
                             </span>
                             {!isPaused && (
-                                <span className="text-xs font-medium text-primary mt-2 uppercase tracking-widest opacity-80 block !static" style={{ transform: 'scale(1)' }}>
+                                <span className="text-xs font-bold text-slate-900 dark:text-white/90 mt-2 uppercase tracking-widest block !static" style={{ transform: 'scale(1)' }}>
                                     {displayState.breathTimer} Seconds
                                 </span>
                             )}
