@@ -85,6 +85,15 @@ function SessionSummary({ stressLevel, location, onReturnHome }) {
                         </div>
                     </div>
 
+                    <button
+                        className="flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-full font-bold text-white shadow-[0_0_20px_-5px_rgba(45,212,191,0.3)] transition-all hover:-translate-y-0.5 hover:shadow-[0_0_25px_-5px_rgba(45,212,191,0.5)] active:scale-[0.99]"
+                        style={{ background: 'linear-gradient(135deg, #14b8a6, #2dd4bf)' }}
+                        onClick={() => window.open('https://telemanas.mohfw.gov.in/home', '_blank')}
+                    >
+                        <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 0" }}>call</span>
+                        Still feeling stressed? Call experts
+                    </button>
+
                     <div className="flex flex-col gap-3">
                         <label className="text-sm font-bold text-white" htmlFor="reflection">Final Reflection</label>
                         <div className="relative">
