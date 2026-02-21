@@ -13,13 +13,17 @@ function LandingPage({ onStart }) {
     return (
         <main className="flex-grow flex items-center justify-center relative w-full h-full min-h-0 overflow-hidden">
 
-            <div className="relative z-10 flex flex-col items-center justify-center gap-10 sm:gap-14 w-full max-w-7xl px-6">
+            <div className="relative z-10 flex flex-col items-center justify-center gap-4 sm:gap-6 w-full max-w-7xl px-6">
                 <div className="flex flex-col items-center gap-4 animate-fade-in relative z-50">
                     <h1 className="text-slate-900 dark:text-white font-extrabold text-center text-massive lowercase drop-shadow-2xl flex items-center justify-center tracking-tight">
                         <span className={`transition-opacity duration-1000 ${isStarting ? 'opacity-0' : 'opacity-100'}`}>the 90</span>
                         <span className={`inline-block origin-[50%_45%] transition-all duration-[1500ms] ease-in will-change-transform ${isStarting ? 'scale-[25] opacity-0 blur-2xl pointer-events-none' : 'scale-100'}`}>0</span>
                     </h1>
                 </div>
+
+                <p className={`text-lg md:text-xl font-display font-medium text-slate-500 dark:text-slate-400 tracking-wide transition-all duration-1000 ${isStarting ? 'opacity-0' : 'opacity-100'}`}>
+                    Hi, Tara
+                </p>
 
                 <div
                     className={`flex flex-col items-center gap-6 transition-all duration-1000 ease-in-out fill-mode-forwards ${isStarting ? 'opacity-0 translate-y-4 pointer-events-none' : 'animate-fade-in delay-200 opacity-100'}`}

@@ -4,6 +4,7 @@ function GuidedBreathing({ onComplete }) {
     const TOTAL_SECONDS = 300; // 5 minutes
 
     const [isPaused, setIsPaused] = useState(false);
+    const [hasStarted, setHasStarted] = useState(false);
 
     const [displayState, setDisplayState] = useState({
         timeRemaining: TOTAL_SECONDS,
@@ -30,6 +31,8 @@ function GuidedBreathing({ onComplete }) {
     };
 
     useEffect(() => {
+        if (!hasStarted) return;
+
         let rafId;
         let lastSeconds = -1;
 
@@ -113,7 +116,7 @@ function GuidedBreathing({ onComplete }) {
             // Help linter realize petalsRef is used if needed, though mostly for cleanup consistency
             petalsRef.current = [];
         };
-    }, [isPaused, onComplete]);
+    }, [isPaused, onComplete, hasStarted]);
 
     const formatTime = (seconds) => {
         const mins = Math.floor(seconds / 60);
@@ -152,76 +155,114 @@ function GuidedBreathing({ onComplete }) {
             <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
             <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
 
-            {/* Removed the misaligned mid-screen progress bar */}
-
-            <div className="relative flex flex-col flex-1 items-center justify-center z-10 w-full max-w-3xl mb-20 min-h-0">
-                <div className="mb-4 flex flex-col items-center flex-shrink-0 relative z-20">
-                    <div className="text-4xl md:text-5xl font-light tracking-tighter tabular-nums text-slate-900 dark:text-white drop-shadow-md">
-                        {formatTime(displayState.timeRemaining)}
-                    </div>
-                    <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-widest">
-                        Remaining
-                    </div>
-                </div>
-
-                <div className="relative flex items-center justify-center w-[250px] h-[250px] md:w-[320px] md:h-[320px] flex-shrink-0 my-8 z-0">
-                    <div className="absolute inset-0 rounded-full border border-primary/20 animate-[ping_4s_cubic-bezier(0,0,0.2,1)_infinite]" style={{ animationPlayState: isPaused ? 'paused' : 'running' }}></div>
-
-                    {/* Flower Container */}
-                    <div
-                        ref={containerRef}
-                        className="relative w-full h-full flex items-center justify-center"
-                        style={{ opacity: isPaused ? 0.6 : 1, transition: 'opacity 0.5s ease' }}
-                    >
-                        {/* Center Core Glow - to anchor the flower */}
-                        <div className="absolute w-[30%] h-[30%] bg-primary/40 rounded-full blur-[40px] z-0 pointer-events-none" />
-
-                        {/* Petals Container for Mix-Blend-Mode context */}
+            {!hasStarted ? (
+                /* ─── Pre-Start Screen ─── */
+                <div className="relative flex flex-col flex-1 items-center justify-center z-10 w-full max-w-3xl min-h-0">
+                    {/* Static flower preview */}
+                    <div className="relative flex items-center justify-center w-[200px] h-[200px] md:w-[260px] md:h-[260px] mb-8">
+                        <div className="absolute w-[30%] h-[30%] bg-primary/30 rounded-full blur-[30px] z-0 pointer-events-none" />
                         <div className="absolute inset-0 flex items-center justify-center">
                             {[...Array(6)].map((_, i) => (
                                 <div
                                     key={i}
-                                    ref={el => petalsRef.current[i] = el}
-                                    className="flower-petal w-[48%] h-[48%]"
-                                    style={{ transformOrigin: 'center' }}
+                                    className="flower-petal w-[48%] h-[48%] absolute"
+                                    style={{
+                                        transformOrigin: 'center',
+                                        transform: `rotate(${i * 60}deg) translate(20px) scale(0.85)`,
+                                        opacity: 0.5
+                                    }}
                                 />
                             ))}
                         </div>
+                    </div>
 
-                        <div className="flex flex-col items-center justify-center text-center p-6 z-10 relative">
-                            <span className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight drop-shadow-lg" style={{ transform: 'scale(1)', zIndex: 30 }}>
-                                {isPaused ? 'Paused' : displayState.breathState}
-                            </span>
-                            {!isPaused && (
-                                <span className="text-xs font-bold text-slate-900 dark:text-white/90 mt-2 uppercase tracking-widest block !static" style={{ transform: 'scale(1)' }}>
-                                    {displayState.breathTimer} Seconds
-                                </span>
-                            )}
+                    <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white tracking-tight mb-2">
+                        Guided Breathing
+                    </h2>
+                    <p className="text-sm text-slate-500 dark:text-slate-400 text-center max-w-xs mb-8">
+                        Take a moment to settle in. When you&apos;re ready, press start to begin your 5-minute breathing exercise.
+                    </p>
+
+                    <button
+                        onClick={() => setHasStarted(true)}
+                        className="group h-14 px-12 rounded-full bg-neon-green hover:bg-neon-green/90 text-background-dark font-bold text-base flex items-center gap-3 shadow-[0_0_30px_rgba(0,255,102,0.25)] hover:shadow-[0_0_50px_rgba(0,255,102,0.45)] hover:-translate-y-1 transition-all duration-300"
+                    >
+                        <span className="material-symbols-outlined text-[22px] font-bold group-hover:scale-110 transition-transform">play_arrow</span>
+                        <span>Start</span>
+                    </button>
+                </div>
+            ) : (
+                /* ─── Active Breathing Exercise ─── */
+                <>
+                    <div className="relative flex flex-col flex-1 items-center justify-center z-10 w-full max-w-3xl mb-20 min-h-0">
+                        <div className="mb-4 flex flex-col items-center flex-shrink-0 relative z-20">
+                            <div className="text-4xl md:text-5xl font-light tracking-tighter tabular-nums text-slate-900 dark:text-white drop-shadow-md">
+                                {formatTime(displayState.timeRemaining)}
+                            </div>
+                            <div className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1 uppercase tracking-widest">
+                                Remaining
+                            </div>
+                        </div>
+
+                        <div className="relative flex items-center justify-center w-[250px] h-[250px] md:w-[320px] md:h-[320px] flex-shrink-0 my-8 z-0">
+                            <div className="absolute inset-0 rounded-full border border-primary/20 animate-[ping_4s_cubic-bezier(0,0,0.2,1)_infinite]" style={{ animationPlayState: isPaused ? 'paused' : 'running' }}></div>
+
+                            {/* Flower Container */}
+                            <div
+                                ref={containerRef}
+                                className="relative w-full h-full flex items-center justify-center"
+                                style={{ opacity: isPaused ? 0.6 : 1, transition: 'opacity 0.5s ease' }}
+                            >
+                                {/* Center Core Glow */}
+                                <div className="absolute w-[30%] h-[30%] bg-primary/40 rounded-full blur-[40px] z-0 pointer-events-none" />
+
+                                {/* Petals Container */}
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    {[...Array(6)].map((_, i) => (
+                                        <div
+                                            key={i}
+                                            ref={el => petalsRef.current[i] = el}
+                                            className="flower-petal w-[48%] h-[48%]"
+                                            style={{ transformOrigin: 'center' }}
+                                        />
+                                    ))}
+                                </div>
+
+                                <div className="flex flex-col items-center justify-center text-center p-6 z-10 relative">
+                                    <span className="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tight drop-shadow-lg" style={{ transform: 'scale(1)', zIndex: 30 }}>
+                                        {isPaused ? 'Paused' : displayState.breathState}
+                                    </span>
+                                    {!isPaused && (
+                                        <span className="text-xs font-bold text-slate-900 dark:text-white/90 mt-2 uppercase tracking-widest block !static" style={{ transform: 'scale(1)' }}>
+                                            {displayState.breathTimer} Seconds
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-            </div>
+                    <div className="absolute bottom-6 w-full flex justify-center z-10 px-4">
+                        <div className="flex gap-4">
+                            <button
+                                onClick={onComplete}
+                                className="group h-12 px-8 rounded-full border-2 border-surface-dark bg-transparent text-red-500 hover:bg-red-500/10 transition-all duration-300 font-bold text-sm flex items-center gap-2 hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(239,68,68,0.15)]"
+                            >
+                                <span className="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">close</span>
+                                <span>End</span>
+                            </button>
 
-            <div className="absolute bottom-6 w-full flex justify-center z-10 px-4">
-                <div className="flex gap-4">
-                    <button
-                        onClick={onComplete}
-                        className="group h-12 px-8 rounded-full border-2 border-surface-dark bg-transparent text-red-500 hover:bg-red-500/10 transition-all duration-300 font-bold text-sm flex items-center gap-2 hover:-translate-y-1 hover:shadow-[0_4px_15px_rgba(239,68,68,0.15)]"
-                    >
-                        <span className="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">close</span>
-                        <span>End</span>
-                    </button>
-
-                    <button
-                        onClick={togglePause}
-                        className="group h-12 px-8 rounded-full bg-neon-green hover:bg-neon-green/90 text-background-dark font-bold text-sm flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,102,0.2)] hover:shadow-[0_0_30px_rgba(0,255,102,0.4)] hover:-translate-y-1 transition-all duration-300"
-                    >
-                        <span className="material-symbols-outlined text-[18px] font-bold group-hover:scale-110 transition-transform">{isPaused ? 'play_arrow' : 'pause'}</span>
-                        <span>{isPaused ? 'Resume' : 'Pause'}</span>
-                    </button>
-                </div>
-            </div>
+                            <button
+                                onClick={togglePause}
+                                className="group h-12 px-8 rounded-full bg-neon-green hover:bg-neon-green/90 text-background-dark font-bold text-sm flex items-center gap-2 shadow-[0_0_20px_rgba(0,255,102,0.2)] hover:shadow-[0_0_30px_rgba(0,255,102,0.4)] hover:-translate-y-1 transition-all duration-300"
+                            >
+                                <span className="material-symbols-outlined text-[18px] font-bold group-hover:scale-110 transition-transform">{isPaused ? 'play_arrow' : 'pause'}</span>
+                                <span>{isPaused ? 'Resume' : 'Pause'}</span>
+                            </button>
+                        </div>
+                    </div>
+                </>
+            )}
 
             <div className="fixed inset-0 pointer-events-none bg-gradient-to-t from-background-dark via-transparent to-transparent opacity-60 z-0"></div>
         </div>
