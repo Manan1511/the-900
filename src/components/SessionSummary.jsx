@@ -120,10 +120,10 @@ function SessionSummary({ stressLevel, location, onReturnHome, onAboutUs }) {
                         </button>
                         <button
                             onClick={onAboutUs}
-                            className="mt-2 text-sm text-text-muted hover:text-white transition-colors underline-offset-4 hover:underline flex items-center justify-center gap-1"
+                            className="mt-2 text-sm text-text-muted hover:text-white transition-colors group flex items-center justify-center gap-1"
                         >
                             <span className="material-symbols-outlined text-[16px]">info</span>
-                            Why "The 900"?
+                            <span className="group-hover:underline underline-offset-4 decoration-1">Why "The 900"?</span>
                         </button>
                     </div>
 
