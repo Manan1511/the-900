@@ -1,6 +1,6 @@
 export const fetchGeminiActivity = async (stressLevel, energyLevel, location) => {
     // Check if API key is provided
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    const apiKey = null;
 
     // Explicit system prompt constraints
     const prompt = `You are a helpful wellbeing assistant. The user has a stress level of ${stressLevel} out of 100 and an energy level of ${energyLevel} out of 100, and is currently in this environment: '${location}'. 
